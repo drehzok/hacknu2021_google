@@ -19,6 +19,13 @@ def prepsearch(norm=True, df = None, target = 'content', importing = False):
         ins.normalizeencoded()
     return ins
 
+def summary_prepsearch():
+    ins = SearchEngine(target="text")
+    ins.importcsv("articles_with_summary.csv")
+    ins.importencoded(path="embs_with_summary.npy")
+    ins.buildindex()
+    return ins
+
 class SearchEngine():
     def __init__(self,  
             pretrained = "distilbert-base-nli-stsb-mean-tokens",
@@ -40,7 +47,7 @@ class SearchEngine():
 
     def importencoded(self, path="embeddings_DistilBert.npy"):
         try:
-            self.em = np.load("embeddings_DistilBert.npy")
+            self.em = np.load(path)
             self.vecdim = self.em.shape[1]
             print("Encoded text database imported successfully")
         except:
