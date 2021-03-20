@@ -54,6 +54,7 @@ class SearchEngine():
                 if dec.lower()[0] == 'y':
                     self.em = self.encoder.encode(self.df[self.target].to_list(),show_progress_bar=True)
                     self.em = np.array([emi for emi in self.em]).astype("float32")
+                    self.vecdim = self.em.shape[1]
                 else:
                     path = input("Enter the path to encoded text base: ")
                     self.importencoded(path)
