@@ -61,6 +61,7 @@ class SearchEngine():
             #self.index = faiss.IndexFlatL2(self.vecdim)
             self.index = faiss.IndexFlatIP(self.vecdim)
             self.index = faiss.IndexIDMap(self.index)
+            self.normalizeencoded()
             self.index.add_with_ids(self.em, self.df.id.values)
             print("FAISS index was built successfully")
             print("Number of articles:", self.index.ntotal)
