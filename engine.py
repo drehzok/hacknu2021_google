@@ -1,6 +1,7 @@
 import pandas as pd
 import torch
 import faiss
+import time
 import numpy as np
 from sklearn.preprocessing import normalize
 from sentence_transformers import SentenceTransformer
@@ -76,11 +77,13 @@ class SearchEngine():
             print("ERROR: CANNOT build index")
     
     def searchquery(self, text_query, k=5, to_display = ["title"]):
-        vector_query = self.encoder.encode(list([text_query]))
+        tic = time.time()
+		vector_query = self.encoder.encode(list([text_query]))
         vector_query = np.array(vector_query).astype("float32")
         vector_query = normalize(vector_query)
         Dists, Ids = self.index.search(vector_query, k = k)
         reslist = [self.df[self.df.id == idx][to_display].values for idx in Ids[0]]
+        print("Time taken for search is {}".format(time.time() - tic))
         for k,i in enumerate(reslist):
             print("rank\t: ",k+1)
             print("metric\t: ", Dists[0][k])
