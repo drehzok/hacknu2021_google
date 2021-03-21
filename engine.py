@@ -76,7 +76,7 @@ class SearchEngine():
         except:
             print("ERROR: CANNOT build index")
     
-    def searchquery(self, text_query, k=5, to_display = ["title"]):
+    def searchquery(self, text_query, k=5, to_display = ["title"], export_txt=False, display_content=False):
         tic = time.time()
         vector_query = self.encoder.encode(list([text_query]))
         vector_query = np.array(vector_query).astype("float32")
@@ -90,6 +90,19 @@ class SearchEngine():
             for j,target in enumerate(to_display):
                 print(target,"\t: ",i[0][j])
             print()
+        if export_txt:
+            with open(f"{text_query}.txt", "w") as f:
+                f.write("Time taken for search is {}".format(time.time() - tic))
+                for k,i in enumerate(reslist):
+                    f.write("rank\t: ",k+1)
+                    f.write("metric\t: ", Dists[0][k])
+                    if display_content:
+                        to_display = ["title", "content"]
+                    for j,target in enumerate(to_display):
+                        f.write(target,"\t: ",i[0][j])
+                    f.write()
+            f.close()
+
 
     def saveencoded(self, path = "embs"):
         np.save(path, self.em)
