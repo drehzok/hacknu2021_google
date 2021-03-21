@@ -60,7 +60,8 @@ class SearchEngine():
                 print("No imported encoded text database.")
                 dec = input("Would you like to encode? (it may take ~ 1 hour)\n (y/n): ")
                 if dec.lower()[0] == 'y':
-                    self.em = self.encoder.encode(self.df[self.target].to_list(),show_progress_bar=True)
+                    self.encoder.max_seq_length = 512
+                    self.em = self.encoder.encode(self.df[self.target].to_list(), show_progress_bar=True)
                     self.em = np.array([emi for emi in self.em]).astype("float32")
                     self.vecdim = self.em.shape[1]
                 else:
