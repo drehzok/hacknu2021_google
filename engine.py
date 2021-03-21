@@ -78,7 +78,7 @@ class SearchEngine():
     
     def searchquery(self, text_query, k=5, to_display = ["title"]):
         tic = time.time()
-		vector_query = self.encoder.encode(list([text_query]))
+        vector_query = self.encoder.encode(list([text_query]))
         vector_query = np.array(vector_query).astype("float32")
         vector_query = normalize(vector_query)
         Dists, Ids = self.index.search(vector_query, k = k)
