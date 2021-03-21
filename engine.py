@@ -77,34 +77,28 @@ class SearchEngine():
         except:
             print("ERROR: CANNOT build index")
     
-    def searchquery(self, text_query, k=5, to_display = ["title", "id"], export_txt=False, display_content=False):
+    def searchquery(self, text_query, k=5, to_display = ["title", "id"], export_txt=False):
         tic = time.time()
         vector_query = self.encoder.encode(list([text_query]))
         vector_query = np.array(vector_query).astype("float32")
         vector_query = normalize(vector_query)
         Dists, Ids = self.index.search(vector_query, k = k)
         reslist = [self.df[self.df.id == idx][to_display].values for idx in Ids[0]]
-        print("Time taken for search is {}".format(time.time() - tic))
+        outstring = ""
+        outstring += "Time taken for search is {}\n".format(time.time() - tic)
         for k,i in enumerate(reslist):
-            print("rank\t: ",k+1)
-            print("metric\t: ", Dists[0][k])
+            outstring += "rank\t: "+str(k+1)+"\n"
+            outstring += "metric\t: "+str( Dists[0][k])+"\n"
             for j,target in enumerate(to_display):
-                print(target,"\t: ",i[0][j])
-            print()
+                if target=="content":
+                    outstring += "content\t: " + str(i[0][j][:100])+"...\n"
+                else:
+                    outstring += str(target)+"\t: " + str(i[0][j])+"\n"
+                
+            outstring += "\n"
+        print(outstring)
         if export_txt:
             with open(f"{text_query}.txt", "w") as f:
-                f.write("Time taken for search is {}".format(time.time() - tic))
-                for k,i in enumerate(reslist):
-                    f.write("rank\t: " + str(k+1))
-                    f.write("metric\t: " + str(Dists[0][k]))
-                    if display_content:
-                        to_display = ["title", "content", "id"]
-                    for j,target in enumerate(to_display):
-                        if target=='content':
-                            f.write(target + "\t" + str(i[0][j][:100]))
-                        else:
-                            f.write(target + "\t" + str(i[0][j][:100]))
-                    f.write('\n')
-
+                f.write(outstring)
     def saveencoded(self, path = "embs"):
         np.save(path, self.em)
